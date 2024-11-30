@@ -2,7 +2,6 @@ from MySQL_config import MySQL_config
 import plotly.express as px
 import pandas as pd
 
-
 def population_rf(df):
     fig = px.bar(df, x='год', y='население',
                  labels={'население': 'Население РФ', 'год': 'Год'}, text_auto=True, color="население")
@@ -13,7 +12,6 @@ def population_rf(df):
 def population_growth(df):
     fig = px.bar(df, x='год', y='общий прирост', labels={'общий прирост': 'Общий прирост население РФ', 'год': 'Год'},
                  text_auto=True, color="общий прирост")
-    fig.update_yaxes(range=[-900000, 330000])
     fig.show()
 
 
@@ -24,14 +22,20 @@ def family(df):
     fig.show()
 
 
+def animation():
+    dataframe = pd.DataFrame.from_dict(MySQL_config().output("ok"))
+    fig = px.bar(dataframe, x="Демографическая характеристика", y="Коэффициент на 1000 населения", color="Демографическая характеристика",
+                 animation_frame="Год", range_y=[0, 20])
+    fig.show()
+
+
 def main():
-    database = MySQL_config()
-    demographics_bd = database.output("demographics")
-    df = pd.DataFrame.from_dict(demographics_bd)
+    df = pd.DataFrame.from_dict(MySQL_config().output("demographics"))
 
     population_rf(df)
     population_growth(df)
     family(df)
+    animation()
 
 
 if __name__ == "__main__":
